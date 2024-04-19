@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { fetchStudyRecords } from "./utils/supabaseFuntions";
 
 export const StudyRecord = () => {
   const [records, setRecords] = useState([]);
@@ -6,6 +7,17 @@ export const StudyRecord = () => {
   const [recordTime, setRecordTime] = useState(0);
   const [error, setError] = useState("");
   const [time, setTime] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setIsLoading(true);
+    async function getStudyRecords() {
+      const data = await fetchStudyRecords();
+      setRecords(data);
+      setIsLoading(false);
+    }
+    getStudyRecords();
+  }, []);
 
   const onClickAddRecord = () => {
     if (!recordTitle || !recordTime) {
@@ -63,13 +75,17 @@ export const StudyRecord = () => {
       <button onClick={onClickAddRecord}>登録</button>
       <div>{error}</div>
       <div>合計時間：{time}/1000(h)</div>
-      <ul>
-        {records.map((record, index) => (
-          <li key={index}>
-            {record.title} {record.time}時間
-          </li>
-        ))}
-      </ul>
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <ul>
+          {records.map((record, index) => (
+            <li key={index}>
+              {record.title} {record.time}時間
+            </li>
+          ))}
+        </ul>
+      )}
     </>
   );
 };
