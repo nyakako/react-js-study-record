@@ -14,9 +14,16 @@ export const StudyRecord = () => {
     async function getStudyRecords() {
       const data = await fetchStudyRecords();
       setRecords(data);
-      setIsLoading(false);
+
+      const totalTime = data.reduce(
+        (accumulator, currentValue) =>
+          parseInt(accumulator) + parseInt(currentValue.time),
+        0
+      );
+      setTime(totalTime);
     }
     getStudyRecords();
+    setIsLoading(false);
   }, []);
 
   const onClickAddRecord = () => {
@@ -34,17 +41,15 @@ export const StudyRecord = () => {
     setRecordTitle("");
     setRecordTime(0);
     setError("");
+    setTime(time + parseInt(recordTime));
   };
-  const totalTime = records.reduce(
-    (accumulator, currentValue) =>
-      parseInt(accumulator) + parseInt(currentValue.time),
-    0
-  );
+
   const onChangeRecordTitle = (event) => setRecordTitle(event.target.value);
   const onChangeRecordTime = (event) => {
     const inputTime = event.target.value;
+    const prevRecordTime = recordTime;
     setRecordTime(inputTime);
-    !inputTime ? setTime(totalTime) : setTime(totalTime + parseInt(inputTime));
+    setTime(time - parseInt(prevRecordTime) + parseInt(inputTime));
   };
 
   return (
