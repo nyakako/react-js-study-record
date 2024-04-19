@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchStudyRecords } from "./utils/supabaseFuntions";
+import { fetchStudyRecords, insertStudyRecord } from "./utils/supabaseFuntions";
 
 export const StudyRecord = () => {
   const [records, setRecords] = useState([]);
@@ -9,24 +9,25 @@ export const StudyRecord = () => {
   const [time, setTime] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
+  async function getStudyRecords() {
+    const data = await fetchStudyRecords();
+    setRecords(data);
+
+    const totalTime = data.reduce(
+      (accumulator, currentValue) =>
+        parseInt(accumulator) + parseInt(currentValue.time),
+      0
+    );
+    setTime(totalTime);
+  }
+
   useEffect(() => {
     setIsLoading(true);
-    async function getStudyRecords() {
-      const data = await fetchStudyRecords();
-      setRecords(data);
-
-      const totalTime = data.reduce(
-        (accumulator, currentValue) =>
-          parseInt(accumulator) + parseInt(currentValue.time),
-        0
-      );
-      setTime(totalTime);
-    }
     getStudyRecords();
     setIsLoading(false);
   }, []);
 
-  const onClickAddRecord = () => {
+  const onClickAddRecord = async () => {
     if (!recordTitle || !recordTime) {
       setError("入力されていない項目があります");
       return;
@@ -36,12 +37,15 @@ export const StudyRecord = () => {
       return;
     }
     const newRecord = { title: recordTitle, time: recordTime };
-    const newRecords = [...records, newRecord];
-    setRecords(newRecords);
+
+    setIsLoading(true);
+    await insertStudyRecord(newRecord);
+    await getStudyRecords();
+    setIsLoading(false);
+
     setRecordTitle("");
     setRecordTime(0);
     setError("");
-    setTime(time + parseInt(recordTime));
   };
 
   const onChangeRecordTitle = (event) => setRecordTitle(event.target.value);
