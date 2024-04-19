@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { fetchStudyRecords, insertStudyRecord } from "./utils/supabaseFuntions";
+import {
+  deleteStudyRecord,
+  fetchStudyRecords,
+  insertStudyRecord,
+} from "./utils/supabaseFuntions";
 
 export const StudyRecord = () => {
   const [records, setRecords] = useState([]);
@@ -48,6 +52,13 @@ export const StudyRecord = () => {
     setError("");
   };
 
+  const onClickDeleteRecord = async (id) => {
+    setIsLoading(true);
+    await deleteStudyRecord(id);
+    await getStudyRecords();
+    setIsLoading(false);
+  };
+
   const onChangeRecordTitle = (event) => setRecordTitle(event.target.value);
   const onChangeRecordTime = (event) => {
     const inputTime = event.target.value;
@@ -87,13 +98,17 @@ export const StudyRecord = () => {
       {isLoading ? (
         <p>Loading...</p>
       ) : (
-        <ul>
+        <div>
           {records.map((record, index) => (
-            <li key={index}>
+            <div key={index}>
+              {/* <span>{record.id}</span> */}
               {record.title} {record.time}時間
-            </li>
+              <button onClick={() => onClickDeleteRecord(record.id)}>
+                削除
+              </button>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </>
   );

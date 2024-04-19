@@ -6,9 +6,9 @@ export async function fetchStudyRecords() {
 }
 
 export async function insertStudyRecord(newRecord) {
-  const { data } = await supabase
-    .from("study-record")
-    .insert(newRecord)
-    .select();
-  return data;
+  await supabase.from("study-record").insert(newRecord).select();
+}
+
+export async function deleteStudyRecord(id) {
+  await supabase.from("study-record").delete().eq("id", id);
 }
