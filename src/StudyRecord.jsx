@@ -90,7 +90,7 @@ export const StudyRecord = () => {
         />
         時間
       </div>
-      <div>入力されている学習内容：{recordTitle}</div>
+      <div style={{ color: "red" }}>入力されている学習内容：{recordTitle}</div>
       <div>入力されている時間：{recordTime}時間</div>
       <button onClick={onClickAddRecord}>登録</button>
       <div>{error}</div>
