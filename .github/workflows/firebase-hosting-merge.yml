@@ -15,11 +15,8 @@ jobs:
         env:
           VITE_SUPABASE_URL: ${{secrets.SUPABASE_URL}}
           VITE_SUPABASE_ANON_KEY: ${{secrets.SUPABASE_ANON_KEY}}
-      - name: Archive build
-        uses: actions/upload-artifact@v2
-        with:
-          name: build
-          path: dist # ビルドされたファイルのディレクトリを指定
+      - name: Save build artifact
+        run: mv dist build-artifact # ビルドされたファイルを一時的な場所に移動
 
   deploy:
     name: Deploy
@@ -28,11 +25,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Download build artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: build
-          path: dist # ビルドされたファイルのディレクトリを指定
+      - name: Copy build artifact
+        run: cp -r build-artifact dist # ビルドされたアーティファクトをデプロイジョブにコピー
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
