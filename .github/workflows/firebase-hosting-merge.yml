@@ -23,6 +23,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Build
+        run: npm ci && npm run build
+        env:
+          VITE_SUPABASE_URL: ${{secrets.SUPABASE_URL}}
+          VITE_SUPABASE_ANON_KEY: ${{secrets.SUPABASE_ANON_KEY}}
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
