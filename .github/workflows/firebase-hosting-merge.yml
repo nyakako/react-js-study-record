@@ -10,13 +10,20 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18"
       - name: Build
         run: npm ci && npm run build
         env:
           VITE_SUPABASE_URL: ${{secrets.SUPABASE_URL}}
           VITE_SUPABASE_ANON_KEY: ${{secrets.SUPABASE_ANON_KEY}}
-      - name: Save build artifact
-        run: mv dist build-artifact # ビルドされたファイルを一時的な場所に移動
+      - name: Archive build
+        uses: actions/upload-artifact@v2
+        with:
+          name: build
+          path: dist # ビルドされたファイルのディレクトリを指定
 
   deploy:
     name: Deploy
@@ -25,8 +32,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Copy build artifact
-        run: cp -r build-artifact dist # ビルドされたアーティファクトをデプロイジョブにコピー
+      - name: Download build artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: build
+          path: dist # ビルドされたファイルのディレクトリを指定
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
