@@ -30,19 +30,19 @@ describe("StudyRecord Component Tests", () => {
     fireEvent.click(addButton);
 
     await waitFor(() => {
-      const renderedRecords = screen.getAllByTestId("study-records");
+      const renderedRecords = screen.queryAllByTestId("study-records");
       expect(renderedRecords).toHaveLength(initialRecords.length + 1);
     });
   });
 
   test("3.削除ボタン押下時に学習記録が1つ減っている", async () => {
     render(<StudyRecord />);
-    await waitFor(() => {
-      screen.getAllByRole("button", { name: "削除" });
-    });
 
     const initialRecords = await fetchStudyRecords();
-    const removeButtons = screen.getAllByRole("button", { name: "削除" });
+    const removeButtons = await screen.findAllByRole("button", {
+      name: "削除",
+    });
+    // test2で追加したレコードを削除
     const removeButton = removeButtons[removeButtons.length - 1];
 
     fireEvent.click(removeButton);
@@ -60,11 +60,12 @@ describe("StudyRecord Component Tests", () => {
     const errorMessage = screen.getByText("入力されていない項目があります");
     expect(errorMessage).toBeInTheDocument();
   });
+
   // test("logRoles: アクセシブルネームを確認する", async () => {
   //   const { container } = render(<StudyRecord />);
 
   //   await waitFor(() => {
-  //     const renderedRecords = screen.getAllByTestId("study-records");
+  //     const renderedRecords = screen.queryAllByTestId("study-records");
   //   });
   //   const addButton = screen.getByTestId("addRecordButton");
   //   fireEvent.click(addButton);
