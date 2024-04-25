@@ -15,20 +15,18 @@ export const StudyRecord = () => {
 
   async function getStudyRecords() {
     const data = await fetchStudyRecords();
-    setRecords(data);
 
     const totalTime = data.reduce(
       (accumulator, currentValue) =>
         parseInt(accumulator) + parseInt(currentValue.time),
       0
     );
+    setRecords(data);
     setTime(totalTime);
   }
 
   useEffect(() => {
-    setIsLoading(true);
     getStudyRecords();
-    setIsLoading(false);
   }, []);
 
   const onClickAddRecord = async () => {
@@ -69,7 +67,7 @@ export const StudyRecord = () => {
 
   return (
     <>
-      <h1>学習記録一覧</h1>
+      <h1 data-testid="pageTitle">学習記録一覧</h1>
       <div>
         <label htmlFor="recordTitle">学習内容</label>
         <input
@@ -77,6 +75,7 @@ export const StudyRecord = () => {
           id="recordTitle"
           value={recordTitle}
           onChange={onChangeRecordTitle}
+          data-testid="recordTitle"
         />
       </div>
       <div>
@@ -87,28 +86,34 @@ export const StudyRecord = () => {
           value={recordTime}
           min={0}
           onChange={onChangeRecordTime}
+          data-testid="recordTime"
         />
         時間
       </div>
       <div style={{ color: "blue" }}>入力されている学習内容：{recordTitle}</div>
       <div>入力されている時間：{recordTime}時間</div>
-      <button onClick={onClickAddRecord}>登録</button>
+      <button onClick={onClickAddRecord} data-testid="addRecordButton">
+        登録
+      </button>
       <div>{error}</div>
       <div>合計時間：{time}/1000(h)</div>
       {isLoading ? (
         <p>Loading...</p>
       ) : (
-        <div>
+        <ul>
           {records.map((record, index) => (
-            <div key={index}>
+            <li key={index} data-testid="study-records">
               {/* <span>{record.id}</span> */}
               {record.title} {record.time}時間
-              <button onClick={() => onClickDeleteRecord(record.id)}>
+              <button
+                onClick={() => onClickDeleteRecord(record.id)}
+                data-testid="removeRecordButton"
+              >
                 削除
               </button>
-            </div>
+            </li>
           ))}
-        </div>
+        </ul>
       )}
     </>
   );
