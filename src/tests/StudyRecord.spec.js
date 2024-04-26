@@ -30,7 +30,7 @@ describe("StudyRecord Component Tests", () => {
     fireEvent.click(addButton);
 
     await waitFor(() => {
-      const renderedRecords = screen.queryAllByTestId("study-records");
+      const renderedRecords = screen.getAllByTestId("study-records");
       expect(renderedRecords).toHaveLength(initialRecords.length + 1);
     });
   });
@@ -48,7 +48,7 @@ describe("StudyRecord Component Tests", () => {
     fireEvent.click(removeButton);
 
     await waitFor(() => {
-      const renderedRecords = screen.queryAllByTestId("study-records");
+      const renderedRecords = screen.getAllByTestId("study-records");
       expect(renderedRecords).toHaveLength(initialRecords.length - 1);
     });
   });
@@ -65,7 +65,7 @@ describe("StudyRecord Component Tests", () => {
   //   const { container } = render(<StudyRecord />);
 
   //   await waitFor(() => {
-  //     const renderedRecords = screen.queryAllByTestId("study-records");
+  //     const renderedRecords = screen.getAllByTestId("study-records");
   //   });
   //   const addButton = screen.getByTestId("addRecordButton");
   //   fireEvent.click(addButton);
