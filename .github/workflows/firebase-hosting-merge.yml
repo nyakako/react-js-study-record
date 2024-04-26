@@ -28,13 +28,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "18"
-      - name: Install
-        run: npm ci
-      - name: Test
-        run: npm run test
+      - name: Build
+        run: npm ci && npm run build
         env:
           VITE_SUPABASE_URL: ${{secrets.SUPABASE_URL}}
           VITE_SUPABASE_ANON_KEY: ${{secrets.SUPABASE_ANON_KEY}}
+      - name: Test
+        run: npm run test
 
   deploy:
     name: Deploy

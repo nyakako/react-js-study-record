@@ -29,10 +29,13 @@ describe("StudyRecord Component Tests", () => {
     fireEvent.change(recordTimeInput, { target: { value: testRecordTime } });
     fireEvent.click(addButton);
 
-    await waitFor(() => {
-      const renderedRecords = screen.getAllByTestId("study-records");
-      expect(renderedRecords).toHaveLength(initialRecords.length + 1);
-    });
+    const renderedRecords = await screen.findAllByTestId("study-records");
+    expect(renderedRecords).toHaveLength(initialRecords.length + 1);
+
+    // await waitFor(() => {
+    //   const renderedRecords = screen.getAllByTestId("study-records");
+    //   expect(renderedRecords).toHaveLength(initialRecords.length + 1);
+    // });
   });
 
   test("3.削除ボタン押下時に学習記録が1つ減っている", async () => {
@@ -47,10 +50,13 @@ describe("StudyRecord Component Tests", () => {
 
     fireEvent.click(removeButton);
 
-    await waitFor(() => {
-      const renderedRecords = screen.getAllByTestId("study-records");
-      expect(renderedRecords).toHaveLength(initialRecords.length - 1);
-    });
+    const renderedRecords = await screen.findAllByTestId("study-records");
+    expect(renderedRecords).toHaveLength(initialRecords.length - 1);
+
+    // await waitFor(() => {
+    //   const renderedRecords = screen.getAllByTestId("study-records");
+    //   expect(renderedRecords).toHaveLength(initialRecords.length - 1);
+    // });
   });
   test("4.入力せず登録ボタン押下するとエラーが表示する", () => {
     render(<StudyRecord />);
@@ -64,9 +70,9 @@ describe("StudyRecord Component Tests", () => {
   // test("logRoles: アクセシブルネームを確認する", async () => {
   //   const { container } = render(<StudyRecord />);
 
-  //   await waitFor(() => {
-  //     const renderedRecords = screen.getAllByTestId("study-records");
-  //   });
+  //
+  //   const renderedRecords = await screen.getAllByTestId("study-records");
+  //
   //   const addButton = screen.getByTestId("addRecordButton");
   //   fireEvent.click(addButton);
   //   logRoles(container);
