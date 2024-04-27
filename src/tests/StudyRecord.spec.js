@@ -1,5 +1,6 @@
 ﻿import React from "react";
 import {
+  act,
   fireEvent,
   logRoles,
   render,
@@ -18,26 +19,26 @@ describe("StudyRecord Component Tests", () => {
 
   test("2.登録ボタン押下時に学習記録が1つ増えている", async () => {
     render(<StudyRecord />);
+    const initialRecords = await fetchStudyRecords();
     const testRecordTitle = "TestRecord";
     const testRecordTime = "7";
     const recordTitleInput = screen.getByTestId("recordTitle");
     const recordTimeInput = screen.getByTestId("recordTime");
     const addButton = screen.getByTestId("addRecordButton");
-    const initialRecords = await fetchStudyRecords();
 
-    fireEvent.change(recordTitleInput, { target: { value: testRecordTitle } });
-    fireEvent.change(recordTimeInput, { target: { value: testRecordTime } });
-    fireEvent.click(addButton);
+    await act(async () => {
+      fireEvent.change(recordTitleInput, {
+        target: { value: testRecordTitle },
+      });
+      fireEvent.change(recordTimeInput, { target: { value: testRecordTime } });
+    });
 
-    const renderedRecords = await waitFor(() =>
-      screen.findAllByTestId("study-records")
-    );
+    await act(async () => {
+      fireEvent.click(addButton);
+    });
+
+    const renderedRecords = await screen.findAllByTestId("study-records");
     expect(renderedRecords).toHaveLength(initialRecords.length + 1);
-
-    // await waitFor(() => {
-    //   const renderedRecords = screen.getAllByTestId("study-records");
-    //   expect(renderedRecords).toHaveLength(initialRecords.length + 1);
-    // });
   });
 
   test("3.削除ボタン押下時に学習記録が1つ減っている", async () => {
@@ -47,21 +48,14 @@ describe("StudyRecord Component Tests", () => {
     const removeButtons = await screen.findAllByRole("button", {
       name: "削除",
     });
-    // test2で追加したレコードを削除
     const removeButton = removeButtons[removeButtons.length - 1];
 
-    fireEvent.click(removeButton);
+    await act(async () => {
+      fireEvent.click(removeButton);
+    });
 
-    const renderedRecords = await waitFor(() =>
-      screen.findAllByTestId("study-records")
-    );
-
+    const renderedRecords = await screen.findAllByTestId("study-records");
     expect(renderedRecords).toHaveLength(initialRecords.length - 1);
-
-    // await waitFor(() => {
-    //   const renderedRecords = screen.getAllByTestId("study-records");
-    //   expect(renderedRecords).toHaveLength(initialRecords.length - 1);
-    // });
   });
   test("4.入力せず登録ボタン押下するとエラーが表示する", () => {
     render(<StudyRecord />);
