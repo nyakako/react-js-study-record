@@ -29,7 +29,9 @@ describe("StudyRecord Component Tests", () => {
     fireEvent.change(recordTimeInput, { target: { value: testRecordTime } });
     fireEvent.click(addButton);
 
-    const renderedRecords = await screen.findAllByTestId("study-records");
+    const renderedRecords = await waitFor(() =>
+      screen.findAllByTestId("study-records")
+    );
     expect(renderedRecords).toHaveLength(initialRecords.length + 1);
 
     // await waitFor(() => {
@@ -50,7 +52,10 @@ describe("StudyRecord Component Tests", () => {
 
     fireEvent.click(removeButton);
 
-    const renderedRecords = await screen.findAllByTestId("study-records");
+    const renderedRecords = await waitFor(() =>
+      screen.findAllByTestId("study-records")
+    );
+
     expect(renderedRecords).toHaveLength(initialRecords.length - 1);
 
     // await waitFor(() => {
