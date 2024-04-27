@@ -37,7 +37,9 @@ describe("StudyRecord Component Tests", () => {
       fireEvent.click(addButton);
     });
 
-    const renderedRecords = await screen.findAllByTestId("study-records");
+    const renderedRecords = await waitFor(() =>
+      screen.findAllByTestId("study-records")
+    );
     expect(renderedRecords).toHaveLength(initialRecords.length + 1);
   });
 
@@ -54,7 +56,9 @@ describe("StudyRecord Component Tests", () => {
       fireEvent.click(removeButton);
     });
 
-    const renderedRecords = await screen.findAllByTestId("study-records");
+    const renderedRecords = await waitFor(() =>
+      screen.findAllByTestId("study-records")
+    );
     expect(renderedRecords).toHaveLength(initialRecords.length - 1);
   });
   test("4.入力せず登録ボタン押下するとエラーが表示する", () => {
