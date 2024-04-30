@@ -2,10 +2,13 @@
 import {
   act,
   fireEvent,
+  getByText,
   logRoles,
+  queryByText,
   render,
   screen,
   waitFor,
+  waitForElementToBeRemoved,
 } from "@testing-library/react";
 import { StudyRecord } from "../StudyRecord";
 import { fetchStudyRecords } from "../utils/supabaseFuntions";
@@ -37,9 +40,12 @@ describe("StudyRecord Component Tests", () => {
       fireEvent.click(addButton);
     });
 
-    const renderedRecords = await waitFor(() =>
-      screen.findAllByTestId("study-records")
-    );
+    await waitFor(() => {
+      expect(
+        screen.getByText(testRecordTitle, { exact: false })
+      ).toBeInTheDocument();
+    });
+    const renderedRecords = await screen.findAllByTestId("study-records");
     expect(renderedRecords).toHaveLength(initialRecords.length + 1);
   });
 
@@ -56,15 +62,15 @@ describe("StudyRecord Component Tests", () => {
       fireEvent.click(removeButton);
     });
 
-    const renderedRecords = await waitFor(() =>
-      screen.findAllByTestId("study-records")
-    );
+    const renderedRecords = await screen.findAllByTestId("study-records");
     expect(renderedRecords).toHaveLength(initialRecords.length - 1);
   });
-  test("4.入力せず登録ボタン押下するとエラーが表示する", () => {
+  test("4.入力せず登録ボタン押下するとエラーが表示する", async () => {
     render(<StudyRecord />);
     const addButton = screen.getByTestId("addRecordButton");
-    fireEvent.click(addButton);
+    await act(async () => {
+      fireEvent.click(addButton);
+    });
 
     const errorMessage = screen.getByText("入力されていない項目があります");
     expect(errorMessage).toBeInTheDocument();
